@@ -11,6 +11,7 @@ Find lane markings on the road using Computer Vision
   <img src="readme_imgs/line_detector.gif" width="700" />
 </p>
 
+• [Blog](https://medium.com/@johngatopoulos/line-detection-make-an-autonomous-car-see-road-lines-e3ed984952c)
 
 ###### _Acknowledgement - References_
 
