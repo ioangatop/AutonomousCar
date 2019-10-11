@@ -37,34 +37,6 @@ class LineDetector:
         return cv2.bitwise_and(img, mask)
 
 
-    # def draw_lines(self, img, lines):
-    #     """Averages/extrapolates the detected line segments"""
-    #     line_dict = {'left':[], 'right':[]}
-    #     img_center = img.shape[1]//2
-    #     for line in lines:
-    #         for x1, y1, x2, y2 in line:
-    #             a = (y2-y1)/(x2-x1)
-    #             x_mean, y_mean = (x1+x2)/2, (y1+y2)/2
-    #             position = 'left' if a <= 0 else 'right'
-    #             line_dict[position].append(np.array([a, x_mean, y_mean]))
-    #             line_dict[position].append(np.array([a, x_mean, y_mean]))
-
-    #     for position, lines_dir in line_dict.items():
-    #         data = np.array(lines_dir)
-    #         data = data[data[:, 2] >= np.array(self.line_threshold)-1]
-    #         coef_ = np.median(data[:,0])
-    #         x = np.median(data[:,1])
-    #         y = np.median(data[:,2])
-    #         intercept_ = y - x*coef_
-
-    #         epsilon = 1e-10
-    #         y1 = np.array(img.shape[0])
-    #         x1 = int((y1 - intercept_)/(coef_+epsilon))
-    #         y2 = np.array(self.line_threshold)
-    #         x2 = int((y2 - intercept_)/(coef_+epsilon))
-
-    #         cv2.line(img, (x1, y1), (x2, y2), color=(0, 255, 0), thickness=self.line_thickness)
-
     def draw_lines(self, img, lines):
         """Averages/extrapolates the detected line segments"""
         line_dict = {'left':[], 'right':[]}
