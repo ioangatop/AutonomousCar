@@ -8,7 +8,7 @@
 Find lane markings on the road using Computer Vision
 
 <p align="center">
-  <img src="readme_imgs/line_detector.gif" width="400" />
+  <img src="readme_imgs/line_detector.gif" width="700" />
 </p>
 
 
