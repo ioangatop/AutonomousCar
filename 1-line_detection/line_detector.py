@@ -12,20 +12,20 @@ class LineDetector:
         self.line_threshold = kargs['line_threshold']
         self.line_thickness = kargs['line_thickness']
 
+
     def grayscale(self, img):
-        """Applies the Grayscale transform"""
         return cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
+
     def canny(self, img, low_threshold, high_threshold):
-        """Applies the Canny transform"""
         return cv2.Canny(img, low_threshold, high_threshold)
 
+
     def gaussian_blur(self, img, kernel_size):
-        """Applies a Gaussian Noise kernel"""
         return cv2.GaussianBlur(img, (kernel_size, kernel_size), 0)
 
+
     def region_of_interest(self, img, vertices):
-        """Applies an image mask."""
         mask = np.zeros_like(img)   
         if len(img.shape) > 2:
             channel_count = img.shape[2]
@@ -38,7 +38,6 @@ class LineDetector:
 
 
     def draw_lines(self, img, lines):
-        """Averages/extrapolates the detected line segments"""
         line_dict = {'left':[], 'right':[]}
         img_center = img.shape[1]//2
         for line in lines:
@@ -65,7 +64,6 @@ class LineDetector:
                 model = Ridge(fit_intercept=True, alpha=0.0, random_state=0, normalize=True)
                 model.fit(x, y)
 
-
             epsilon = 1e-10
             y1 = np.array(img.shape[0])
             x1 = (y1 - model.intercept_)/(model.coef_+epsilon)
@@ -73,24 +71,23 @@ class LineDetector:
             x2 = (y2 - model.intercept_)/(model.coef_+epsilon)
             x = np.append(x, [x1, x2], axis=0)
 
-            # cv2.line(img, (x1, y1), (x2, y2), color=(255, 0, 0), thickness=self.line_thickness)
-
             y_pred = model.predict(x)
             data = np.append(x, y_pred.reshape((-1, 1)), axis=1)
             cv2.polylines(img, np.int32([data]), isClosed=False,
                           color=(255, 0, 0), thickness=self.line_thickness)
 
+
     def hough_lines(self, img, rho, theta, threshold, min_line_len, max_line_gap):
-        """Returns an image with hough lines drawn."""
         lines = cv2.HoughLinesP(img, rho, theta, threshold, np.array([]),
                                 minLineLength=min_line_len, maxLineGap=max_line_gap)
         line_img = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
         self.draw_lines(line_img, lines)
         return line_img
 
+
     def weighted_img(self, img, initial_img, α=0.95, β=1., γ=0.):
-        """initial_img * α + img * β + γ"""
         return cv2.addWeighted(initial_img, α, img, β, γ)
+
 
     def forward(self, img):
         """Detect lines and draw them on the image"""
@@ -98,14 +95,12 @@ class LineDetector:
         img_line = self.gaussian_blur(img_line, kernel_size=self.gaussian_kernel)
         img_line = self.canny(img_line, low_threshold=self.low_threshold,
                               high_threshold=self.high_threshold)
-
         vertices = np.array([[(0, img_line.shape[0]), (img_line.shape[1], img_line.shape[0]),
                               (400, 260), (600, 260)]])
-
         img_line = self.region_of_interest(img_line, vertices)
         img_line = self.hough_lines(img_line, **self.hough_settings)
-
         return self.weighted_img(img_line, img)
+
 
 if __name__ == "__main__":
     pass
